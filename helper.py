@@ -14,3 +14,10 @@ def is_alphabet(text: str) -> bool:
             return False
     return True
 
+
+def remove_punctuation(text: str) -> str:
+    """remove punctuation from the input text
+    :param text: input text
+    :return: cleaned text
+    """
+    return text.translate(str.maketrans('', '', string.punctuation))
