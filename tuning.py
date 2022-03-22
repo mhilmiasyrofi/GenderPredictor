@@ -51,10 +51,9 @@ def objective(trial):
     # load the dataset
     names = pd.read_csv("data/name_gender.csv")
     names["name"] = names["name"].apply(lambda x: x.lower())
-    names["name"] = names.apply(
-        lambda row: helper.remove_punctuation(row["name"]), axis=1)
-    names["name"] = names.apply(
-        lambda row: helper.remove_number(row["name"]), axis=1)
+    names["name"] = names.apply(lambda row: helper.remove_punctuation(row["name"]), axis=1)
+    names["name"] = names.apply(lambda row: helper.remove_number(row["name"]), axis=1)
+    names["name"] = names.apply(lambda row: helper.normalize_text(row["name"]), axis=1)
 
     ngram_range_trial = trial.suggest_categorical(
         'ngram_feature', ["(2,2)", "(3,3)"])
@@ -76,7 +75,7 @@ def objective(trial):
 
     y = names["gender"].apply(lambda x: 1 if x == "M" else 0)
 
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.05)
 
     
     # define the keras model
@@ -84,10 +83,10 @@ def objective(trial):
 
     input_dim = len(count_vectorizer.get_feature_names())
     model.add(Dense(128, input_dim=input_dim, activation='relu'))
-    model.add(Dropout(0.4))
+    model.add(Dropout(0.5))
 
     # Tune the number of units in the Dense layer
-    # Choose an optimal value between 128-512
+    # Choose an optimal value between 256-512
     dense_units = trial.suggest_categorical(
         'dense_unit', [256, 384, 512])
 
@@ -110,8 +109,7 @@ def objective(trial):
                     activity_regularizer=regularizers.l2(1e-2)
                     ))
 
-    model.add(Dropout(0.3))
-    model.add(Dense(32, activation='relu'))
+    # model.add(Dropout(0.3))
     model.add(Dense(1, activation='sigmoid'))
 
     # Tune the learning rate for the optimizer
@@ -128,7 +126,7 @@ def objective(trial):
 
     # fit the keras model on the dataset
     model.fit(X_train, y_train, epochs=EPOCHS, batch_size=BATCHSIZE,
-              validation_split=0.1, verbose=False, callbacks=[stop_early])
+              validation_split=0.05, verbose=False, callbacks=[stop_early])
     
     # make class predictions with the model
     probs = model.predict(X_test, verbose=False)
