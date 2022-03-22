@@ -1,27 +1,23 @@
 from django.shortcuts import render
-
+import pickle
+import tensorflow
 
 def home(request):
     return render(request, 'index.html')
 
-# custom method for generating predictions
-def getPredictions(pclass, sex, age, sibsp, parch, fare, C, Q, S):
-    # import pickle
-    # model = pickle.load(open("titanic_survival_ml_model.sav", "rb"))
-    # scaled = pickle.load(open("scaler.sav", "rb"))
-    # prediction = model.predict(sc.transform(
-    #     [[pclass, sex, age, sibsp, parch, fare, C, Q, S]]))
-
-    # if prediction == 0:
-    #     return "not survived"
-    # elif prediction == 1:
-    #     return "survived"
-    # else:
-    #     return "error"
-    return "trial"
+count_vectorizer = pickle.load(open('../model/count_vectorizer.pickle', 'rb'))
+model = tensorflow.keras.models.load_model("../model")
+MALE = 1
+FEMALE = 0
 
 def get_prediction(name: str) -> str:
-    return "male"
+
+    feature = count_vectorizer.transform([name])
+    probability = model.predict(feature)
+    prediction = ((probability) > 0.5).astype(int)
+
+    label = ['male' if p == MALE else 'female' for p in prediction]
+    return label[0]
 
 # our result page view
 def result(request):
