@@ -1,5 +1,6 @@
 import unidecode
 import string
+import sklearn
 
 def is_alphabet(text: str) -> bool:
     """check whether the text contain non-alphabetic character
@@ -41,3 +42,23 @@ def normalize_text(text: str) -> str:
     """
     normalized_text = unidecode.unidecode(text)
     return normalized_text
+
+
+def compute_roc_auc(y_prob, y):
+    """compute false positive rate, true positive rate, and auc score
+    :param y_prob: predicted probability
+    :param y: label
+    """
+    fpr, tpr, thresholds = sklearn.metrics.roc_curve(y, y_prob)
+    auc_score = sklearn.metrics.auc(fpr, tpr)
+    return fpr, tpr, auc_score
+
+
+def compute_score(y_pred, y):
+    """compute accuracy and f1-score
+    :param y_prob: prediction
+    :param y: label
+    """
+    acc = sklearn.metrics.accuracy_score(y, y_pred)
+    f1 = sklearn.metrics.f1_score(y, y_pred)
+    return acc, f1
