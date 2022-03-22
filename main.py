@@ -99,3 +99,10 @@ print("AUC\t\t: ", auc_score)
 # 2   0.998237  0.869613  0.998612  0.897873   0.999971  0.934790
 # 3   0.998158  0.867614  0.998550  0.896205   0.999962  0.936098
 # 4   0.998198  0.866772  0.998580  0.895225   0.999951  0.935521
+
+
+# TODO: 
+# - Preprocessing -> normalize greek character etc
+# - Count Vectorizer -> fit add dummy to handle out of vocabulary
+# - Trainer -> add evaluation in val data per 10 epoch
+# - Trainer -> hyper parameter tuning
