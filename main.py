@@ -10,6 +10,7 @@ from sklearn.model_selection import train_test_split
 
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense
+from tensorflow.keras.layers import Dropout
 from tensorflow.keras import regularizers
 
 
@@ -54,20 +55,22 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1)
 
 # define the keras model
 model = Sequential()
-model.add(Dense(64, input_dim=618, activation='relu'))
+model.add(Dense(256, input_dim=618, activation='relu'))
+model.add(Dropout(0.3, input_shape=(512,)))
 model.add(Dense(512,
                 activation='relu',
                 kernel_regularizer=regularizers.l2(1e-3),
                 bias_regularizer=regularizers.l2(1e-3),
                 activity_regularizer=regularizers.l2(1e-3)
                 ))
+model.add(Dropout(0.4, input_shape=(512,)))
 model.add(Dense(64,
                 activation='relu',
                 kernel_regularizer=regularizers.l2(1e-3),
                 bias_regularizer=regularizers.l2(1e-3),
                 activity_regularizer=regularizers.l2(1e-3)
                 ))
-model.add(Dense(8, activation='relu'))
+model.add(Dense(32, activation='relu'))
 model.add(Dense(1, activation='sigmoid'))
 
 # compile the keras model
@@ -75,7 +78,7 @@ model.compile(loss='binary_crossentropy',
               optimizer='adam', metrics=['accuracy'])
 
 # fit the keras model on the dataset
-model.fit(X_train, y_train, epochs=30, batch_size=256, verbose=1)
+model.fit(X_train, y_train, epochs=300, batch_size=512, verbose=1)
 # make class predictions with the model
 probs = model.predict(X_test)
 predictions = ((probs) > 0.5).astype(int)
