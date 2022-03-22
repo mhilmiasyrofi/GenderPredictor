@@ -1,4 +1,5 @@
 """
+Build the model using the best parameter and then save the model into external file
 
 Reference:
     * https://www.tensorflow.org/ 
@@ -9,9 +10,6 @@ Reference:
 
 import pandas as pd
 import sklearn
-from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
-from sklearn.metrics import roc_curve, auc, accuracy_score, f1_score
-from sklearn.model_selection import train_test_split
 
 import tensorflow as tf
 from tensorflow import keras
@@ -28,43 +26,34 @@ BATCHSIZE = 512
 EPOCHS = 500
 
 
-def compute_roc_auc(y_prob, y):
-    fpr, tpr, thresholds = sklearn.metrics.roc_curve(y, y_prob)
-    auc_score = sklearn.metrics.auc(fpr, tpr)
-    return fpr, tpr, auc_score
-
-
-def compute_score(y_pred, y):
-    acc = sklearn.metrics.accuracy_score(y, y_pred)
-    f1 = sklearn.metrics.f1_score(y, y_pred)
-    return acc, f1
+NGRAM_RANGE = (2, 2)
+DENSE_UNIT = 256
+DROPOUT_RATIO = 0.3
+LEARNING_RATE = 1e-4
 
 if __name__ == "__main__":
 
-    # Clear clutter from previous Keras session graphs.
+    ## Clear clutter from previous Keras session graphs.
     clear_session()
 
-    # load the dataset
+    ## load the dataset
     names = pd.read_csv("data/name_gender.csv")
+
+    ## preprocess the dataset
     names["name"] = names["name"].apply(lambda x: x.lower())
-    names["name"] = names.apply(
-        lambda row: helper.remove_punctuation(row["name"]), axis=1)
-    names["name"] = names.apply(
-        lambda row: helper.remove_number(row["name"]), axis=1)
-    names["name"] = names.apply(
-        lambda row: helper.normalize_text(row["name"]), axis=1)
+    names["name"] = names.apply(lambda row: helper.remove_punctuation(row["name"]), axis=1)
+    names["name"] = names.apply(lambda row: helper.remove_number(row["name"]), axis=1)
+    names["name"] = names.apply(lambda row: helper.normalize_text(row["name"]), axis=1)
 
-    count_vectorizer = CountVectorizer(
-        analyzer='char', ngram_range=(2, 2))
-
+    ## convert name into its feature representation
+    count_vectorizer = sklearn.feature_extraction.text.CountVectorizer(analyzer='char', ngram_range=NGRAM_RANGE)
     cv_features = count_vectorizer.fit_transform(names["name"])
+    X = pd.DataFrame(data=cv_features.toarray(), columns=count_vectorizer.get_feature_names())
 
-    X = pd.DataFrame(data=cv_features.toarray(),
-                     columns=count_vectorizer.get_feature_names())
-
+    ## convert string label into int label
     y = names["gender"].apply(lambda x: 1 if x == "M" else 0)
 
-    # define the keras model
+    ## define the keras model
     model = Sequential()
 
     input_dim = len(count_vectorizer.get_feature_names())
@@ -72,14 +61,14 @@ if __name__ == "__main__":
     model.add(Dropout(0.5))
 
     model.add(keras.layers.Dense(
-        units=256,
+        units=DENSE_UNIT,
         activation='relu',
         kernel_regularizer=regularizers.l2(1e-2),
         bias_regularizer=regularizers.l2(1e-2),
         activity_regularizer=regularizers.l2(1e-2)
     ))
 
-    model.add(Dropout(0.3))
+    model.add(Dropout(DROPOUT_RATIO))
     model.add(Dense(64,
                     activation='relu',
                     kernel_regularizer=regularizers.l2(1e-2),
@@ -89,18 +78,19 @@ if __name__ == "__main__":
 
     model.add(Dense(1, activation='sigmoid'))
 
-    model.compile(optimizer=keras.optimizers.Adam(learning_rate=1e-4),
+    ## set the training optimizer, loss, and evaluation metric
+    model.compile(optimizer=keras.optimizers.Adam(learning_rate=LEARNING_RATE),
                   loss='binary_crossentropy',
                   metrics=['accuracy'])
 
+    ## add early stopping to reduce overfitting
     stop_early = tf.keras.callbacks.EarlyStopping(
         monitor='val_loss', patience=10)
 
-    # fit the keras model on the dataset
+    ## fit the keras model on the dataset
     model.fit(X, y, epochs=EPOCHS, batch_size=BATCHSIZE,
               validation_split=0.05, verbose=True, callbacks=[stop_early])
 
     model.save("model")
-    filename = 'model/count_vectorizer.pickle'
-    pickle.dump(count_vectorizer, open(filename, 'wb'))
+    pickle.dump(count_vectorizer, open('model/count_vectorizer.pickle', 'wb'))
 
