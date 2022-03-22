@@ -20,9 +20,9 @@ def get_prediction(name: str) -> str:
     return label[0]
 
 # our result page view
-def result(request):
+def predict(request):
     name = request.GET['name']
     
     result = get_prediction(name)
 
-    return render(request, 'result.html', {'result': result})
+    return render(request, 'predict.html', {'result': result})

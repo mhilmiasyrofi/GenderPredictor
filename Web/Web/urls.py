@@ -23,5 +23,5 @@ urlpatterns = [
     
     # configure home page (default view) and result web page
     path('', views.home, name='home'),
-    path('result/', views.result, name='result'),
+    path('predict/', views.predict, name='predict'),
 ]
