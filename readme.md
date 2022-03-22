@@ -22,7 +22,7 @@ cd GenderPredictor
 
 1. `exploratory-data-analysis.ipynb` provides initial exploration to understand the dataset, especially for data cleaning and comparing various models (e.g. kNN, random forest, and multi layer perceptron)
 
-2. `tuning.py` performs hyperparameter tuning to search the best parameter of the model selected from the previous exploratory data analysis step. It will output `log.txt` thats log the hyperparameter tuning and informs the best parameter.
+2. `tuning.py` performs hyperparameter tuning to search the best parameter of the model selected from the previous exploratory data analysis step. `log.txt` is a log example that records the hyperparameter tuning and informs the best parameter.
 
 3. `build_model.py` will build the model using the best parameter and save the model into external folder `model/`
 
