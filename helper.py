@@ -1,3 +1,4 @@
+import unidecode
 import string
 
 def is_alphabet(text: str) -> bool:
@@ -29,3 +30,14 @@ def remove_number(text: str) -> str:
     :return: cleaned text
     """
     return text.translate(str.maketrans('', '', '0123456789'))
+
+
+def normalize_text(text: str) -> str:
+    """normalize or remove all the accents (diacritics)
+    :param text: input text
+    :return: normalized text
+
+    Example: 'Málaga' -> 'Malaga'
+    """
+    normalized_text = unidecode.unidecode(text)
+    return normalized_text
