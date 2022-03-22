@@ -1,0 +1,19 @@
+Number of finished trials: 11
+Accuracy: 0.875; Params: dict_items([('ngram_feature', '(2,2)'), ('dense_unit', 384), ('dropout', 0.3), ('learning_rate', 0.01)])
+Accuracy: 0.875; Params: dict_items([('ngram_feature', '(3,3)'), ('dense_unit', 512), ('dropout', 0.4), ('learning_rate', 0.01)])
+Accuracy: 0.880; Params: dict_items([('ngram_feature', '(3,3)'), ('dense_unit', 256), ('dropout', 0.6), ('learning_rate', 0.0001)])
+Accuracy: 0.881; Params: dict_items([('ngram_feature', '(2,2)'), ('dense_unit', 256), ('dropout', 0.6), ('learning_rate', 0.0001)])
+Accuracy: 0.882; Params: dict_items([('ngram_feature', '(3,3)'), ('dense_unit', 384), ('dropout', 0.4), ('learning_rate', 0.0001)])
+Accuracy: 0.882; Params: dict_items([('ngram_feature', '(3,3)'), ('dense_unit', 512), ('dropout', 0.3), ('learning_rate', 0.01)])
+Accuracy: 0.883; Params: dict_items([('ngram_feature', '(2,2)'), ('dense_unit', 384), ('dropout', 0.5), ('learning_rate', 0.01)])
+Accuracy: 0.889; Params: dict_items([('ngram_feature', '(2,2)'), ('dense_unit', 512), ('dropout', 0.5), ('learning_rate', 0.0001)])
+Accuracy: 0.892; Params: dict_items([('ngram_feature', '(2,2)'), ('dense_unit', 256), ('dropout', 0.3), ('learning_rate', 0.001)])
+Accuracy: 0.893; Params: dict_items([('ngram_feature', '(2,2)'), ('dense_unit', 512), ('dropout', 0.5), ('learning_rate', 0.001)])
+Accuracy: 0.896; Params: dict_items([('ngram_feature', '(2,2)'), ('dense_unit', 256), ('dropout', 0.3), ('learning_rate', 0.0001)])
+Best trial:
+  Accuracy: 0.8958223718825634
+  Params: 
+    ngram_feature: (2,2)
+    dense_unit: 256
+    dropout: 0.3
+    learning_rate: 0.0001
