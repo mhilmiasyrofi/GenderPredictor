@@ -55,7 +55,18 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1)
 # define the keras model
 model = Sequential()
 model.add(Dense(64, input_dim=618, activation='relu'))
-
+model.add(Dense(512,
+                activation='relu',
+                kernel_regularizer=regularizers.l2(1e-3),
+                bias_regularizer=regularizers.l2(1e-3),
+                activity_regularizer=regularizers.l2(1e-3)
+                ))
+model.add(Dense(64,
+                activation='relu',
+                kernel_regularizer=regularizers.l2(1e-3),
+                bias_regularizer=regularizers.l2(1e-3),
+                activity_regularizer=regularizers.l2(1e-3)
+                ))
 model.add(Dense(8, activation='relu'))
 model.add(Dense(1, activation='sigmoid'))
 
